@@ -1,0 +1,10 @@
+{
+  "name": "D9Enigma Plasma Simulator",
+  "description": "An audiophile music player, visualizer and 60FPS video generator/recorder with worldwide cyber & synth live radio streaming, Sovereign.ISP decentralized mesh connectivity, creator donation support, audio-proof brickwall limiters & hearing comfort modes, 5-band studio DSP equalizer, and bass-synchronized plasma visualizer with customizable aspect ratios, resolutions, and video presets.",
+  "requestFramePermissions": [
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
