@@ -454,6 +454,38 @@ export const VisualizerSettings: React.FC<VisualizerSettingsProps> = ({
           ) : (
             /* TAB 3: VISUALIZER OPTICS & SHADERS */
             <div className="space-y-6">
+              {/* Playback Target FPS */}
+              <div>
+                <label className="text-xs font-semibold text-white/80 uppercase tracking-wider block mb-3">
+                  Playback Framerate (FPS)
+                </label>
+                <div className="grid grid-cols-3 gap-2.5">
+                  {[
+                    { fps: 60, label: '60 FPS', desc: 'Smooth' },
+                    { fps: 30, label: '30 FPS', desc: 'Standard' },
+                    { fps: 25, label: '25 FPS', desc: 'Cinematic / Eco' },
+                  ].map((opts) => {
+                    // Treat undefined or 60 as 60
+                    const currentFps = params.targetFps || 60;
+                    const isSelected = currentFps === opts.fps;
+                    return (
+                      <button
+                        key={opts.fps}
+                        onClick={() => updateParam('targetFps', opts.fps)}
+                        className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${
+                          isSelected
+                            ? 'border-indigo-500 bg-indigo-500/20 text-white shadow-[0_0_15px_rgba(99,102,241,0.3)]'
+                            : 'border-white/10 bg-white/5 text-white/70 hover:border-white/20 hover:text-white'
+                        }`}
+                      >
+                        <span className="font-mono text-sm font-bold text-indigo-400">{opts.fps}</span>
+                        <span className="text-[10px]">{opts.desc}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               {/* Visualizer Mode */}
               <div>
                 <label className="text-xs font-semibold text-white/80 uppercase tracking-wider block mb-3">
@@ -539,6 +571,65 @@ export const VisualizerSettings: React.FC<VisualizerSettingsProps> = ({
                     onChange={(e) => updateParam('arcs', parseInt(e.target.value))}
                     className="w-full h-1.5 bg-white/15 rounded-lg appearance-none cursor-pointer accent-indigo-400"
                   />
+                </div>
+              </div>
+
+              {/* Advanced Auto-Randomizer & Speed */}
+              <div className="space-y-4 pt-2 border-t border-white/10">
+                <div className="flex items-center justify-between bg-indigo-500/10 border border-indigo-500/30 p-3 rounded-xl">
+                  <div>
+                    <h5 className="text-xs font-bold text-indigo-300">Fast Auto-Randomizer</h5>
+                    <p className="text-[10px] text-white/50">Rapidly cycle through modes, speeds, and themes</p>
+                  </div>
+                  <button
+                    onClick={() => updateParam('autoRandomize', !params.autoRandomize)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+                      params.autoRandomize
+                        ? 'bg-indigo-600 text-white shadow-[0_0_10px_rgba(99,102,241,0.5)]'
+                        : 'bg-white/10 text-white/60 hover:bg-white/20'
+                    }`}
+                  >
+                    <Activity className="h-3.5 w-3.5" />
+                    <span>{params.autoRandomize ? 'ACTIVE' : 'OFF'}</span>
+                  </button>
+                </div>
+
+                {params.autoRandomize && (
+                  <div>
+                    <div className="flex justify-between text-xs mb-1">
+                      <span className="text-white/70">Randomizer Interval</span>
+                      <span className="font-mono text-indigo-300 font-bold">{(params.autoRandomizeInterval || 2500) / 1000}s</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="500"
+                      max="15000"
+                      step="500"
+                      value={params.autoRandomizeInterval || 2500}
+                      onChange={(e) => updateParam('autoRandomizeInterval', parseInt(e.target.value))}
+                      className="w-full h-1.5 bg-white/15 rounded-lg appearance-none cursor-pointer accent-indigo-400"
+                    />
+                  </div>
+                )}
+
+                <div>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-white/70">Base Render Speed (Tempo)</span>
+                    <span className="font-mono text-indigo-300 font-bold">{params.speed.toFixed(2)}x</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0.05"
+                    max="4.0"
+                    step="0.05"
+                    value={params.speed}
+                    onChange={(e) => updateParam('speed', parseFloat(e.target.value))}
+                    disabled={params.autoRandomize}
+                    className={`w-full h-1.5 bg-white/15 rounded-lg appearance-none cursor-pointer accent-indigo-400 ${params.autoRandomize ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  />
+                  <p className="text-[10px] text-white/40 mt-1">
+                    Slide left for very slow cinematic movement. Locked while Auto-Randomizer is active.
+                  </p>
                 </div>
               </div>
             </div>

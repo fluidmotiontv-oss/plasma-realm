@@ -56,6 +56,15 @@ const THEME_PALETTES: Record<ColorTheme, { baseHue: number; secondaryHue: number
 export const PlasmaCanvas = forwardRef<HTMLCanvasElement, PlasmaCanvasProps>(function PlasmaCanvas({ params, background }, ref) {
   const internalCanvasRef = useRef<HTMLCanvasElement>(null);
   const bgImageRef = useRef<HTMLImageElement | null>(null);
+  
+  const paramsRef = useRef(params);
+  const bgRef = useRef(background);
+
+  // Keep refs updated without triggering effects
+  useEffect(() => {
+    paramsRef.current = params;
+    bgRef.current = background;
+  }, [params, background]);
 
   useImperativeHandle(ref, () => internalCanvasRef.current as HTMLCanvasElement);
 
@@ -342,7 +351,24 @@ export const PlasmaCanvas = forwardRef<HTMLCanvasElement, PlasmaCanvasProps>(fun
     };
 
     // --- Main Render Loop ---
-    const render = () => {
+    let lastRenderTime = performance.now();
+
+    const render = (time: number) => {
+      animationFrameId = requestAnimationFrame(render);
+      const params = paramsRef.current;
+      const background = bgRef.current;
+
+      if (params.targetFps && params.targetFps !== 60) {
+        // Limit FPS
+        const interval = 1000 / params.targetFps;
+        const deltaTime = time - lastRenderTime;
+        if (deltaTime < interval) {
+          return; // Skip this frame
+        }
+        // Adjust lastRenderTime, taking into account precision
+        lastRenderTime = time - (deltaTime % interval);
+      }
+
       const w = window.innerWidth;
       const h = window.innerHeight;
       const minDimension = Math.min(w, h);
@@ -674,7 +700,6 @@ export const PlasmaCanvas = forwardRef<HTMLCanvasElement, PlasmaCanvasProps>(fun
       ctx.restore();
 
       ctx.restore();
-      animationFrameId = requestAnimationFrame(render);
     };
 
     // --- MODE RENDERERS ---
@@ -1104,7 +1129,7 @@ export const PlasmaCanvas = forwardRef<HTMLCanvasElement, PlasmaCanvasProps>(fun
       c.shadowBlur = 0;
     };
 
-    render();
+    render(performance.now());
 
     return () => {
       window.removeEventListener('resize', resize);
@@ -1118,7 +1143,7 @@ export const PlasmaCanvas = forwardRef<HTMLCanvasElement, PlasmaCanvasProps>(fun
       window.removeEventListener('touchend', handleTouchEnd);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [params, background]);
+  }, []); // Empty dependency array prevents canvas reset
 
   return (
     <canvas

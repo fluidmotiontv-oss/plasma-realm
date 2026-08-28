@@ -267,26 +267,36 @@ export const VideoStudioModal: React.FC<VideoStudioModalProps> = ({
                 <span>Capture Frame Rate</span>
                 <span className="font-mono text-cyan-400">{captureSettings.videoFps} FPS</span>
               </label>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-3 gap-2">
                 <button
                   onClick={() => updateSetting('videoFps', 60)}
-                  className={`py-2 px-3 rounded-lg text-xs font-bold border transition ${
+                  className={`py-2 px-1 rounded-lg text-xs font-bold border transition text-center ${
                     captureSettings.videoFps === 60
                       ? 'border-cyan-500 bg-cyan-600 text-white shadow'
                       : 'border-white/10 bg-white/5 text-white/60 hover:text-white'
                   }`}
                 >
-                  60 FPS (Ultra Smooth)
+                  60 FPS
                 </button>
                 <button
                   onClick={() => updateSetting('videoFps', 30)}
-                  className={`py-2 px-3 rounded-lg text-xs font-bold border transition ${
+                  className={`py-2 px-1 rounded-lg text-xs font-bold border transition text-center ${
                     captureSettings.videoFps === 30
                       ? 'border-cyan-500 bg-cyan-600 text-white shadow'
                       : 'border-white/10 bg-white/5 text-white/60 hover:text-white'
                   }`}
                 >
-                  30 FPS (Standard)
+                  30 FPS
+                </button>
+                <button
+                  onClick={() => updateSetting('videoFps', 25)}
+                  className={`py-2 px-1 rounded-lg text-xs font-bold border transition text-center ${
+                    captureSettings.videoFps === 25
+                      ? 'border-cyan-500 bg-cyan-600 text-white shadow'
+                      : 'border-white/10 bg-white/5 text-white/60 hover:text-white'
+                  }`}
+                >
+                  25 FPS
                 </button>
               </div>
             </div>

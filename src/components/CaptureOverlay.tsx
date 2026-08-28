@@ -85,7 +85,7 @@ export function CaptureOverlay({
             <span className="text-white font-semibold">D9 Plasma Audio</span>
             <span className="text-white/40">|</span>
             <span className="text-cyan-300/80 font-mono text-[11px] hidden md:inline">
-              60FPS Video Generator & Studio
+              HD Video Generator & Studio
             </span>
           </div>
 

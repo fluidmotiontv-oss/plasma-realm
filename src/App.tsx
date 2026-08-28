@@ -17,6 +17,8 @@ import { SYNTHWAVE_BACKGROUNDS } from './data/backgrounds';
 import {
   Track,
   VisualizerParams,
+  VisualizerMode,
+  ColorTheme,
   EqualizerSettings,
   CaptureSettings,
   BackgroundSettings,
@@ -43,6 +45,8 @@ const INITIAL_PARAMS: VisualizerParams = {
   bassReactivity: 1.8,
   highReactivity: 1.2,
   customHue: 190,
+  autoRandomize: true,
+  autoRandomizeInterval: 2500, // Very fast randomization
 };
 
 const INITIAL_BACKGROUND: BackgroundSettings = {
@@ -260,6 +264,30 @@ export default function App() {
       }
     }
   }, [background, showToast]);
+
+  // Fast Automatic Randomizer Loop
+  useEffect(() => {
+    if (!params.autoRandomize) return;
+
+    const VALID_MODES: VisualizerMode[] = ['plasma_orb', 'radial_spectrum', 'cosmic_nebula', 'lightning_matrix', 'vector_ribbon'];
+    const VALID_THEMES: ColorTheme[] = ['cyberpunk', 'solar_flare', 'cosmic_violet', 'bio_emerald', 'hyper_prism', 'cryo_glacial', 'obsidian_lava'];
+
+    const interval = setInterval(() => {
+      setParams((prev) => ({
+        ...prev,
+        mode: VALID_MODES[Math.floor(Math.random() * VALID_MODES.length)],
+        theme: VALID_THEMES[Math.floor(Math.random() * VALID_THEMES.length)],
+        arcs: Math.floor(Math.random() * 24) + 4, // 4 to 28
+        complexity: Math.floor(Math.random() * 8) + 2, // 2 to 10
+        // Increase variety and allow MUCH slower speeds (0.05 to 2.05)
+        speed: Math.random() * 2.0 + 0.05,
+        particleCount: Math.floor(Math.random() * 120) + 20, // 20 to 140
+        shockwaveIntensity: Math.random() * 1.5 + 0.5, // 0.5 to 2.0
+      }));
+    }, params.autoRandomizeInterval || 2500);
+
+    return () => clearInterval(interval);
+  }, [params.autoRandomize, params.autoRandomizeInterval]);
 
   // Set up Audio Engine Callbacks & Recorder
   useEffect(() => {

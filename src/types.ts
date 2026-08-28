@@ -31,6 +31,9 @@ export interface VisualizerParams {
   bassReactivity: number;
   highReactivity: number;
   customHue?: number;
+  targetFps?: number;
+  autoRandomize?: boolean;
+  autoRandomizeInterval?: number;
 }
 
 export type TvChassisStyle = 'retro_woodgrain' | 'cyber_monitor' | 'portable_crt' | 'borderless_crt';
@@ -155,7 +158,7 @@ export interface EqualizerSettings {
 }
 
 export type VideoBitrate = 4000000 | 8000000 | 15000000 | 25000000;
-export type VideoFPS = 30 | 60;
+export type VideoFPS = 25 | 30 | 60;
 export type VideoResolution = '4k' | '1080p' | '720p';
 export type VideoAspectRatio = '16:9' | '9:16' | '1:1' | '4:3';
 export type RecordTimerMode = 'manual' | '15s' | '30s' | '60s' | '180s' | 'track_end';
